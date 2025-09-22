@@ -8,7 +8,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 # ----------------------------
 # Step 1. Load PDF
 # ----------------------------
-pdf_path = "IncomeTaxOrdinance.pdf"
+pdf_path = ""
 pdf_doc = fitz.open(pdf_path)
 
 # ----------------------------
@@ -87,3 +87,4 @@ vectorstore = Chroma.from_documents(
 )
 
 print("✅ Embeddings created and stored in ./chroma_db")
+
