@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Law Chatbot</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      margin-top: 40px;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 800px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px 0 0 8px;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    h2, h3 {
+      margin-top: 25px;
+      color: #34495e;
+    }
+
+    #answer {
+      background: #ecf6ff;
+      padding: 15px;
+      border-left: 4px solid #3498db;
+      border-radius: 8px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    #sources {
+      background: #f9f9f9;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+  </style>
+  <script>
+    async function askQuestion() {
+      const query = document.getElementById("query").value;
+      const answerElem = document.getElementById("answer");
+      const sourcesElem = document.getElementById("sources");
+
+      answerElem.innerText = "Loading...";
+      sourcesElem.innerText = "";
+
+      const response = await fetch("http://127.0.0.1:9000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        answerElem.innerText = "❌ Error: " + data.error;
+      } else {
+        answerElem.innerText = data.answer;
+
+        let refs = "";
+        data.sources.forEach(src => {
+          refs += `📄 Page ${src.page} | Source: ${src.source}\n`;
+        });
+        sourcesElem.innerText = refs || "No sources found.";
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>📘 Law Chatbot</h1>
+    <div class="input-group">
+      <input type="text" id="query" placeholder="Ask a question about law...">
+      <button onclick="askQuestion()">Ask</button>
+    </div>
+
+    <h2>Answer:</h2>
+    <p id="answer"></p>
+
+    <h3>Sources:</h3>
+    <pre id="sources"></pre>
+  </div>
+</body>
+</html>
