@@ -7,7 +7,7 @@ from langchain.chains import RetrievalQA
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="API")
+app = FastAPI()
 
 # Allow frontend (HTML/JS) to call API
 app.add_middleware(
@@ -30,7 +30,7 @@ def load_pipeline():
     
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = Chroma(
-        collection_name="tax_law",
+        collection_name="law",
         embedding_function=embeddings,
         persist_directory="./chroma_db"
     )
@@ -64,4 +64,5 @@ async def ask_question(req: QueryRequest):
         for doc in result["source_documents"]
     ]
     return {"answer": result["result"], "sources": sources}
+
 
